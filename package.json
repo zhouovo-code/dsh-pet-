@@ -1,0 +1,34 @@
+{
+  "name": "dsh-pet",
+  "version": "1.0.0",
+  "description": "DSH 看板娘余额挂件：浮在 DeepSeek Harness Web GUI 上的小挂件，显示 DeepSeek 余额与今日用量，可点击、抚摸互动并切换表情",
+  "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "plugin",
+    "desktop-pet",
+    "balance"
+  ],
+  "main": "./lib/host.js",
+  "exports": {
+    ".": "./lib/host.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "assets",
+    "README.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "client": {
+      "platform": "web"
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

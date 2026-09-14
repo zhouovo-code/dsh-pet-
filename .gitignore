@@ -1,0 +1,13 @@
+# 运行时数据（每台机器各自生成，不要提交）
+data/
+*.log
+
+# 依赖 / 编辑器
+node_modules/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# 打包产物
+*.zip
