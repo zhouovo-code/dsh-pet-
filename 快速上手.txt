@@ -1,0 +1,136 @@
+﻿﻿dsh-pet 看板娘余额挂件 —— 快速上手
+=====================================
+
+【先确认版本对不对（很重要）】
+
+  本插件在  DSH 0.1.5-rc.1  上完整测试通过 ✓ 这也是当前用的人最多的版本
+  （npx @deepseek-ai/dsh web 默认装到的就是它 ✓ 周下载占比约 59%）。
+
+  查看自己的版本（在 PowerShell 里）：
+
+      npx @deepseek-ai/dsh --version
+
+  如果不是 0.1.5-rc.1，用这条命令固定版本启动（会自动装好）：
+
+      npx @deepseek-ai/dsh@0.1.5-rc.1 --profile web
+
+  已知情况：
+    · 0.1.5-rc.1            ✓ 完整可用（推荐）
+    · 0.1.5-rc.2 (next)     ⚠ 未测试
+    · 0.1.0-rc.x 等老版本    ✗ 插件能装、但界面不显示，请升级到 0.1.5-rc.1
+
+
+【顺序很重要：先开 DSH，再装插件】
+
+  第 1 步   先让 DSH 跑起来（这一步必须在前面）
+            · 桌面双击「DeepSeek Harness」，或命令行执行：  npx @deepseek-ai/dsh web
+            · 等到浏览器里能看到 DSH 的界面为止
+            · 看板娘是挂在 DSH 上的：DSH 没在运行，装完也看不到她
+
+  第 2 步   装插件
+            · 解压本压缩包（整个文件夹一起解压）
+            · 双击「安装看板娘.cmd」
+            · 装完桌面会自动多出两个图标：  启动看板娘  /  关闭看板娘
+
+  第 3 步   回到浏览器刷新一次
+            · 回到已经打开的 DSH 页面，按一次  Ctrl + Shift + R
+            · 右下角就会出现她
+
+
+【看不到她？按这个顺序排查】
+
+  1) DSH 还在运行吗？
+     浏览器里的 DSH 页面能正常打开吗？打不开就先做「第 1 步」——插件必须依赖它。
+
+  2) 是不是之前点过「关闭」？
+     双击桌面「启动看板娘」，4 秒内她就会出现（不用刷新页面）。
+
+  3) 装完刷新过页面吗？
+     装之前就开着的旧页面，需要按一次  Ctrl + Shift + R  才会加载插件。
+
+  4) 还看不到？做一次自检：
+     浏览器访问   http://127.0.0.1:<DSH的端口>/pet-api/diag
+       · clientEntryPresent 是 true   → 插件已加载，属于页面/缓存问题，强刷即可
+       · 是 false                      → 插件条目没被 DSH 读到，检查这个文件里有没有 dsh-pet：
+                                        ~/.dsh/profiles/web/cordis.patch.yml
+
+
+【看不到余额 / 余额显示错误？】
+
+  这不是插件坏了 —— 是**还没有配置 DeepSeek API Key**（不配也能用，只是余额区没数据）。
+
+  配置方法（二选一）：
+    方法 A（推荐，不用改文件）：
+        setx DEEPSEEK_API_KEY "sk-你的key"
+        然后重开一次 DSH（命令行窗口要重开，环境变量才生效）
+    方法 B：写进 ~/.dsh/.credentials.yaml —— 这个文件格式很严格，写错会让 DSH 直接起不来，
+            具体格式见 README 的「显示余额」一节（version 必须顶格、是数字 1）
+
+  配好之后，余额区就会显示真实余额和今日用量。
+  ⚠️ 余额为 0 或很低时她会演「慌张脸」——那是正常表情，不是报错 😄
+
+
+【日常操作】
+
+  桌面「启动看板娘」   打开她（如果你之前关闭过）
+  桌面「关闭看板娘」   彻底关闭（连右下角小圆牌都不显示，重启后依然保持关闭）
+
+  单击她               摸摸（弹跳、冒心心、说话、音效）
+  按住拖动             抚摸她 / 挪动位置（位置会记住）
+  快速连点             3 下兴奋、5 下慌张、6 下生气
+  双击                 立即刷新余额
+  气泡按钮             刷新 / 音效 / 动效 / 表情 / 玩法 / 关闭 / 收起
+
+
+【她什么时候换表情】
+
+  😊 常态    默认
+  😰 慌张    余额 < ¥10（3.6 秒）/ < ¥3（5.2 秒）、5 秒内连点 5 下、生气状态全程
+  😴 偷懒    闲置 30 秒后睡着（碰一下就惊醒）
+  ☺️ 害羞    连点 3 下、被摸醒的瞬间、每抚摸 4 次
+
+
+【DSH 起不来了？先自救（30 秒）】
+
+  症状：运行 dsh web 直接报错退出，例如
+        · YAMLException / must be a top-level YAML array ...
+        · credentials-local: the value for "version" must be a string
+
+  最快的自救：删掉那个出问题的配置文件，DSH 就能起来（它会当成"没有补丁/没有凭据"处理）：
+
+      在 PowerShell 里粘这一行（注意是一行）：
+
+      Remove-Item "$env:USERPROFILE\.dsh\profiles\web\cordis.patch.yml" -Force
+
+      （如果是凭据文件的问题，就把 cordis.patch.yml 换成 .credentials.yaml）
+
+  然后：
+    · 只是想用插件 → 重新双击「安装看板娘.cmd」，它会重新写一份正确的配置
+    · 想手工写 → 打开 PowerShell 粘这一行（同样是一行，写完会打印出来给你确认）：
+
+      $f="$env:USERPROFILE\.dsh\profiles\web\cordis.patch.yml"; Set-Content $f -Value @("- insert:","    - id: dsh-pet","      name: 'file:///C:/Users/你的用户名/.dsh/plugins/dsh-pet/lib/host.js'") -Encoding UTF8; Get-Content $f
+
+  检查是否正确：文件内容应该长这样（- 顶格、缩进两层）：
+
+      - insert:
+          - id: dsh-pet
+            name: 'file:///C:/Users/你的用户名/.dsh/plugins/dsh-pet/lib/host.js'
+
+
+【dsh web 报端口占用 EADDRINUSE？】
+
+  说明已经有一个 DSH 在跑了（一个端口只能跑一个）：
+    · 直接用已经跑着的那个：浏览器打开 http://127.0.0.1:3080/
+    · 或者换个端口再开一个：  dsh web --port 3081
+    · 或先关掉旧的：  netstat -ano | findstr :3080   拿到 PID 后  taskkill /PID <PID> /F
+    · 最省事：用桌面「DeepSeek Harness」快捷方式，它会自动复用已有的实例 ✓
+
+
+【完整卸载】
+
+  回到解压出来的文件夹，双击「卸载看板娘.cmd」（不在桌面放卸载快捷方式）。
+  它只删 dsh-pet 自己的东西：插件目录 + 桌面两个快捷方式 + DSH 配置里 dsh-pet 那几行
+  （其他插件的配置一行不动，改前自动备份）。
+
+
+许可证：MIT（见 LICENSE）。角色立绘随本项目提供，再分发请保留说明。
